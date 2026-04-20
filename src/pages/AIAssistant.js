@@ -1,7 +1,8 @@
 import React, { useState, useRef, useEffect } from 'react';
 
 // ⚠️  REPLACE WITH YOUR GEMINI API KEY
-const GEMINI_API_KEY = 'YOUR_GEMINI_API_KEY';
+// ⚠️  Using environment variable for security
+const GEMINI_API_KEY = process.env.REACT_APP_GEMINI_API_KEY || 'YOUR_GEMINI_API_KEY';
 
 const SYSTEM = `You are StadiumSense AI — the smart assistant for Wankhede Stadium, Mumbai during IPL 2025 Match 42 (MI vs CSK).
 
