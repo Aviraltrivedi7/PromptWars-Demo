@@ -1,165 +1,171 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { VENUE } from '../data/venueData';
 
 const VENUES = ['Wankhede Stadium','Eden Gardens','Narendra Modi Stadium','M. Chinnaswamy'];
 
 export default function Splash() {
   const nav = useNavigate();
-  const [vIdx, setVIdx] = useState(0);
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
     setMounted(true);
-    const t = setInterval(() => setVIdx(i => (i+1)%VENUES.length), 2200);
-    return () => clearInterval(t);
   }, []);
-
-  const pct = Math.round((VENUE.currentAttendees / VENUE.capacity) * 100);
 
   return (
     <div style={{
-      minHeight:'100vh', background:'var(--bg)',
-      display:'flex', flexDirection:'column', alignItems:'center',
-      justifyContent:'center', padding:'24px', position:'relative', overflow:'hidden',
+      minHeight:'100vh', 
+      background:'var(--bg)',
+      display:'flex', 
+      flexDirection:'column', 
+      alignItems:'center',
+      justifyContent:'center', 
+      padding:'24px', 
+      position:'relative', 
+      overflow:'hidden',
     }}>
       <style>{`
-        .splash-grid{
-          position:absolute;inset:0;
-          background-image:linear-gradient(var(--border) 1px,transparent 1px),
-            linear-gradient(90deg,var(--border) 1px,transparent 1px);
-          background-size:48px 48px;opacity:.35;
+        .splash-bg {
+          position: absolute;
+          inset: 0;
+          background: url('/stadium-bg.png') center/cover no-repeat;
+          filter: brightness(0.4) saturate(1.2);
+          transform: scale(1.1);
+          animation: zoomOut 20s infinite alternate;
         }
-        .splash-orb1{
-          position:absolute;width:560px;height:560px;border-radius:50%;
-          background:radial-gradient(circle,rgba(0,212,255,.13) 0%,transparent 70%);
-          top:-180px;left:-180px;pointer-events:none;
+        @keyframes zoomOut {
+          from { transform: scale(1.1); }
+          to { transform: scale(1.0); }
         }
-        .splash-orb2{
-          position:absolute;width:420px;height:420px;border-radius:50%;
-          background:radial-gradient(circle,rgba(162,89,255,.10) 0%,transparent 70%);
-          bottom:-120px;right:-120px;pointer-events:none;
+        .splash-overlay {
+          position: absolute;
+          inset: 0;
+          background: radial-gradient(circle at center, transparent 0%, var(--bg) 90%);
         }
-        .splash-orb3{
-          position:absolute;width:300px;height:300px;border-radius:50%;
-          background:radial-gradient(circle,rgba(255,107,53,.08) 0%,transparent 70%);
-          bottom:100px;left:-80px;pointer-events:none;
+        .splash-content {
+          position: relative;
+          z-index: 10;
+          text-align: center;
+          opacity: 0;
+          transform: translateY(20px);
+          transition: all 1.2s cubic-bezier(0.22, 1, 0.36, 1);
         }
-        .splash-in{
-          opacity:0;transform:translateY(32px);
-          transition:opacity .9s ease,transform .9s ease;
-          position:relative;z-index:1;text-align:center;width:100%;max-width:420px;
+        .splash-content.show {
+          opacity: 1;
+          transform: translateY(0);
         }
-        .splash-in.show{opacity:1;transform:translateY(0)}
-        .live-pill{
-          display:inline-flex;align-items:center;gap:8px;
-          background:rgba(0,212,255,.08);border:1px solid rgba(0,212,255,.25);
-          border-radius:100px;padding:7px 18px;margin-bottom:28px;
-          font-size:11px;letter-spacing:.12em;color:var(--accent);
-          font-family:var(--font-mono);
+        .premium-tag {
+          display: inline-flex;
+          align-items: center;
+          gap: 8px;
+          background: rgba(34, 211, 238, 0.1);
+          backdrop-filter: blur(8px);
+          border: 1px solid rgba(34, 211, 238, 0.3);
+          border-radius: 100px;
+          padding: 8px 20px;
+          margin-bottom: 32px;
+          font-size: 11px;
+          letter-spacing: 0.2em;
+          color: var(--accent);
+          font-family: var(--font-mono);
+          text-transform: uppercase;
         }
-        .live-dot{width:6px;height:6px;border-radius:50%;background:var(--accent);animation:ldot 1.4s infinite}
-        @keyframes ldot{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.3;transform:scale(.7)}}
-        .splash-title{
-          font-family:var(--font-display);
-          font-size:clamp(78px,22vw,130px);
-          line-height:.88;letter-spacing:.02em;
-          background:linear-gradient(140deg,#fff 20%,var(--accent) 80%);
-          -webkit-background-clip:text;-webkit-text-fill-color:transparent;
-          margin-bottom:6px;
+        .main-title {
+          font-family: var(--font-display);
+          font-size: clamp(64px, 18vw, 110px);
+          line-height: 0.85;
+          letter-spacing: -0.02em;
+          margin-bottom: 20px;
+          text-shadow: 0 0 30px rgba(34, 211, 238, 0.3);
         }
-        .splash-sub{
-          font-family:var(--font-display);
-          font-size:clamp(16px,4.5vw,24px);
-          color:var(--accent2);letter-spacing:.24em;margin-bottom:28px;
+        .main-title span {
+          display: block;
         }
-        .splash-desc{font-size:14px;color:var(--text2);line-height:1.7;margin-bottom:40px}
-        .venue-ticker{
-          display:inline-block;
-          font-family:var(--font-mono);font-size:12px;color:var(--accent);
-          transition:opacity .4s;
+        .desc-text {
+          font-size: 16px;
+          color: var(--text-muted);
+          max-width: 320px;
+          margin: 0 auto 48px;
+          line-height: 1.6;
         }
-        .stats-row{
-          display:flex;gap:10px;margin-bottom:36px;justify-content:center;
+        .btn-premium {
+          width: 100%;
+          max-width: 320px;
+          padding: 20px;
+          background: white;
+          color: black;
+          border: none;
+          border-radius: 20px;
+          font-family: var(--font-display);
+          font-size: 24px;
+          letter-spacing: 0.05em;
+          box-shadow: 0 10px 30px rgba(255,255,255,0.2);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 12px;
         }
-        .stat-pill{
-          background:var(--card);border:1px solid var(--border2);
-          border-radius:12px;padding:10px 16px;text-align:center;
-          min-width:90px;
+        .btn-premium:hover {
+          transform: translateY(-4px) scale(1.02);
+          box-shadow: 0 15px 40px rgba(255,255,255,0.3);
         }
-        .stat-num{font-family:var(--font-mono);font-size:18px;font-weight:700;color:var(--accent)}
-        .stat-lbl{font-size:9px;color:var(--text2);letter-spacing:.08em;text-transform:uppercase;margin-top:2px}
-        .btn-enter{
-          width:100%;padding:18px;
-          background:linear-gradient(135deg,var(--accent),#0099cc);
-          border:none;border-radius:16px;
-          font-family:var(--font-display);font-size:26px;letter-spacing:.12em;
-          color:#000;cursor:pointer;
-          transition:transform .2s,box-shadow .2s;
-          box-shadow:0 0 0 0 rgba(0,212,255,.4);
-          margin-bottom:12px;
+        .btn-secondary {
+          margin-top: 16px;
+          background: transparent;
+          color: var(--text-muted);
+          border: 1px solid var(--glass-border);
+          padding: 14px 40px;
+          border-radius: 20px;
+          font-size: 14px;
+          backdrop-filter: blur(8px);
         }
-        .btn-enter:hover{transform:scale(1.02);box-shadow:0 0 32px rgba(0,212,255,.35)}
-        .btn-ai{
-          width:100%;padding:14px;
-          background:transparent;border:1px solid var(--border2);
-          border-radius:16px;color:var(--text2);cursor:pointer;
-          font-size:14px;transition:all .2s;
+        .feat-chips {
+          display: flex;
+          flex-wrap: wrap;
+          justify-content: center;
+          gap: 8px;
+          margin-top: 56px;
         }
-        .btn-ai:hover{border-color:var(--accent3);color:var(--accent3)}
-        .feat-row{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:36px}
-        .feat-chip{
-          background:var(--card);border:1px solid var(--border);
-          border-radius:20px;padding:7px 14px;
-          font-size:12px;color:var(--text2);display:flex;align-items:center;gap:6px;
+        .f-chip {
+          background: var(--glass);
+          border: 1px solid var(--glass-border);
+          padding: 8px 16px;
+          border-radius: 100px;
+          font-size: 12px;
+          color: var(--text-dim);
         }
-        .powered{margin-top:24px;font-family:var(--font-mono);font-size:10px;color:var(--text3);letter-spacing:.08em}
       `}</style>
-      <div className="splash-grid"/>
-      <div className="splash-orb1"/><div className="splash-orb2"/><div className="splash-orb3"/>
+      
+      <div className="splash-bg" />
+      <div className="splash-overlay" />
 
-      <div className={`splash-in ${mounted?'show':''}`}>
-        <div className="live-pill">
-          <div className="live-dot"/>
-          NOW AT <span className="venue-ticker">{VENUES[vIdx].toUpperCase()}</span>
+      <div className={`splash-content ${mounted ? 'show' : ''}`}>
+        <div className="premium-tag">
+          <div style={{ width: 6, height: 6, borderRadius: '50%', background: 'var(--accent)', boxShadow: '0 0 10px var(--accent)' }} />
+          Official Match Experience
         </div>
 
-        <div className="splash-title">STADIUM<br/>SENSE</div>
-        <div className="splash-sub">POWERED BY GEMINI AI</div>
-        <p className="splash-desc">
-          Real-time crowd intelligence · Zero-wait navigation<br/>
-          AI-powered assistance for every moment at the venue
+        <h1 className="main-title">
+          <span className="text-gradient">STADIUM</span>
+          <span style={{ color: 'white' }}>SENSE</span>
+        </h1>
+
+        <p className="desc-text">
+          Experience the game like never before with real-time AI intelligence.
         </p>
 
-        <div className="stats-row">
-          <div className="stat-pill">
-            <div className="stat-num">{VENUE.currentAttendees.toLocaleString()}</div>
-            <div className="stat-lbl">Live Now</div>
-          </div>
-          <div className="stat-pill">
-            <div className="stat-num" style={{color:'var(--yellow)'}}>{pct}%</div>
-            <div className="stat-lbl">Capacity</div>
-          </div>
-          <div className="stat-pill">
-            <div className="stat-num" style={{color:'var(--green)'}}>2m</div>
-            <div className="stat-lbl">Avg Wait</div>
-          </div>
-        </div>
-
-        <button className="btn-enter" onClick={() => nav('/dashboard')}>
-          ENTER STADIUM →
+        <button className="btn-premium" onClick={() => nav('/dashboard')}>
+           GO LIVE NOW <span style={{ fontSize: 28 }}>→</span>
         </button>
-        <button className="btn-ai" onClick={() => nav('/ai')}>
-          🧠 Ask AI Assistant
+        
+        <button className="btn-secondary" onClick={() => nav('/ai')}>
+          🧠 ASK ASSISTANT
         </button>
 
-        <div className="feat-row">
-          {['🗺️ Live Crowd Map','⏱️ Wait Predictor','🍔 Seat Ordering','🧠 Gemini AI','🚨 SOS System','🪑 Seat Navigator'].map(f=>(
-            <div key={f} className="feat-chip">{f}</div>
+        <div className="feat-chips">
+          {['Crowd Flow','Seat Nav','Pre-orders','AI Help'].map(f => (
+            <div key={f} className="f-chip">{f}</div>
           ))}
         </div>
-
-        <div className="powered">BUILT ON GOOGLE GEMINI · MAPS · FIREBASE · CLOUD</div>
       </div>
     </div>
   );

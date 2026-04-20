@@ -20,58 +20,106 @@ export default function SeatNav() {
     else { setFound(null); setNotFound(true); }
   };
 
-  const POPULAR = ['C-14','D-27','E-8','B-15','A-20','F-5'];
+  const POPULAR = ['C-14','D-27','E-8','B-15','A-20'];
 
   return (
-    <div className="page-wrap">
+    <div className="page-wrap" style={{ background: 'var(--bg)', minHeight: '100vh' }}>
       <style>{`
-        .sn-hdr{padding:16px;border-bottom:1px solid var(--border)}
-        .sn-form{padding:16px;background:var(--bg2);border-bottom:1px solid var(--border)}
-        .sn-inp{
-          background:var(--card);border:1px solid var(--border2);
-          border-radius:var(--r-md);padding:14px;color:var(--text);
-          font-size:18px;font-family:var(--font-mono);width:100%;outline:none;
-          text-transform:uppercase;letter-spacing:.1em;text-align:center;
-          transition:border-color .2s;
+        .sn-header-premium {
+          padding: 24px 20px;
+          border-bottom: 1px solid var(--glass-border);
         }
-        .sn-inp:focus{border-color:var(--accent)}
-        .find-btn{
-          width:100%;padding:15px;background:var(--accent);border:none;
-          border-radius:var(--r-md);color:#000;font-family:var(--font-display);
-          font-size:20px;letter-spacing:.1em;cursor:pointer;margin-top:12px;
-          transition:opacity .2s;
+        .search-container {
+          padding: 32px 20px;
+          background: linear-gradient(180deg, rgba(34, 211, 238, 0.05) 0%, transparent 100%);
         }
-        .find-btn:hover{opacity:.88}
-        .result-card{
-          margin:16px;background:var(--card);border:2px solid var(--accent);
-          border-radius:var(--r-xl);padding:20px;animation:fadeUp .3s ease;
+        .premium-input-box {
+          position: relative;
+          background: var(--glass);
+          border: 1px solid var(--glass-border);
+          border-radius: 20px;
+          padding: 24px;
+          text-align: center;
         }
-        @keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
-        .info-row{display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border)}
-        .info-lbl{font-size:12px;color:var(--text2)}
-        .info-val{font-size:13px;font-weight:600;fontFamily:var(--font-mono)}
-        .pill-row{display:flex;flex-wrap:wrap;gap:8px;padding:14px 16px}
-        .seat-pill{
-          background:var(--card);border:1px solid var(--border);
-          border-radius:8px;padding:7px 14px;font-size:13px;font-family:var(--font-mono);
-          cursor:pointer;transition:all .2s;color:var(--text2);
+        .seat-inp-large {
+          background: transparent;
+          border: none;
+          width: 100%;
+          font-family: var(--font-display);
+          font-size: 48px;
+          color: white;
+          text-align: center;
+          outline: none;
+          letter-spacing: 0.1em;
+          margin-bottom: 16px;
         }
-        .seat-pill:hover{border-color:var(--accent);color:var(--accent)}
-        .section-list{padding:14px 16px}
-        .section-row{
-          display:flex;align-items:center;gap:12px;
-          background:var(--card);border:1px solid var(--border);
-          border-radius:var(--r-md);padding:13px;margin-bottom:8px;
+        .seat-inp-large::placeholder { opacity: 0.2; }
+        .find-btn-premium {
+          width: 100%;
+          padding: 18px;
+          background: white;
+          color: black;
+          border-radius: 16px;
+          font-family: var(--font-display);
+          font-size: 20px;
+          font-weight: 800;
+          letter-spacing: 0.1em;
+          border: none;
+          box-shadow: 0 10px 30px rgba(255,255,255,0.2);
+          transition: 0.3s;
         }
-        .sec-color{width:12px;height:40px;border-radius:3px;flex-shrink:0}
+        .find-btn-premium:active { transform: scale(0.98); }
+        .result-glass-card {
+          margin: 0 20px 24px;
+          background: var(--glass);
+          border: 1px solid var(--accent);
+          border-radius: var(--r-xl);
+          padding: 24px;
+          animation: slideUp 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+          box-shadow: 0 10px 40px var(--accent-glow);
+        }
+        .nav-step {
+          display: flex;
+          gap: 16px;
+          margin-top: 20px;
+          padding: 16px;
+          background: rgba(255,255,255,0.03);
+          border-radius: 16px;
+          border: 1px solid var(--glass-border);
+        }
+        .step-icon {
+          width: 32px;
+          height: 32px;
+          background: var(--accent);
+          border-radius: 50%;
+          color: black;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-weight: 800;
+          flex-shrink: 0;
+        }
+        .seat-pill-glass {
+          background: var(--glass);
+          border: 1px solid var(--glass-border);
+          padding: 8px 16px;
+          border-radius: 100px;
+          font-size: 13px;
+          font-family: var(--font-mono);
+          color: var(--text-muted);
+        }
+        .exit-pill {
+          display: flex;
+          align-items: center;
+          gap: 16px;
+          background: var(--glass);
+          border: 1px solid var(--glass-border);
+          padding: 12px 16px;
+          margin: 0 20px 12px;
+          border-radius: 16px;
+        }
       `}</style>
 
-      <div className="sn-hdr">
-        <div style={{fontFamily:'var(--font-display)',fontSize:26,letterSpacing:'.05em'}}>FIND MY SEAT 🪑</div>
-        <div style={{fontSize:11,color:'var(--text2)'}}>Enter seat number for directions</div>
-      </div>
-
-      <div className="sn-form">
         <div style={{fontSize:11,color:'var(--text2)',fontFamily:'var(--font-mono)',letterSpacing:'.1em',textTransform:'uppercase',marginBottom:8}}>Your Seat Number</div>
         <input className="sn-inp" placeholder="e.g. C-14" value={seatInput}
           onChange={e=>setSeatInput(e.target.value)}

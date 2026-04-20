@@ -13,12 +13,24 @@ import BottomNav from './components/BottomNav';
 
 function Layout({ children }) {
   return (
-    <div style={{ maxWidth: 480, margin: '0 auto', minHeight: '100vh', position: 'relative', background: 'var(--bg)' }}>
-      {children}
+    <div style={{ 
+      maxWidth: 480, 
+      margin: '0 auto', 
+      minHeight: '100vh', 
+      position: 'relative', 
+      background: 'var(--bg)',
+      boxShadow: '0 0 100px rgba(0,0,0,0.5)',
+      display: 'flex',
+      flexDirection: 'column'
+    }}>
+      <div style={{ flex: 1, position: 'relative', zIndex: 1 }}>
+        {children}
+      </div>
       <BottomNav />
     </div>
   );
 }
+
 
 export default function App() {
   return (

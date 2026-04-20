@@ -9,33 +9,104 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet"/>
   <style>
-    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-    :root{
-      --bg:#060a12;--bg2:#0b1320;--bg3:#101b2e;--card:#121c2e;
-      --border:#1a2840;--border2:#243652;
-      --accent:#00d4ff;--accent2:#ff6b35;--accent3:#a259ff;
-      --green:#00e676;--red:#ff3d57;--yellow:#ffd600;--orange:#ff9500;
-      --text:#ddeeff;--text2:#6a8aad;--text3:#3d5a7a;
-      --font-display:'Bebas Neue',sans-serif;
-      --font-body:'DM Sans',sans-serif;
-      --font-mono:'JetBrains Mono',monospace;
-      --r-sm:8px;--r-md:14px;--r-lg:20px;--r-xl:28px;
-      --shadow:0 4px 24px rgba(0,0,0,0.4);
+    :root {
+      --bg: #020617;
+      --bg-alt: #0f172a;
+      --card: rgba(30, 41, 59, 0.5);
+      --glass: rgba(15, 23, 42, 0.7);
+      --glass-border: rgba(255, 255, 255, 0.1);
+      
+      --accent: #22d3ee;
+      --accent-glow: rgba(34, 211, 238, 0.3);
+      --secondary: #a855f7;
+      --secondary-glow: rgba(168, 85, 247, 0.3);
+      
+      --green: #4ade80;
+      --red: #f87171;
+      --yellow: #fbbf24;
+      --orange: #fb923c;
+      
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+      --text-dim: #64748b;
+      
+      --font-display: 'Bebas Neue', sans-serif;
+      --font-body: 'DM Sans', sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+      
+      --r-xs: 8px;
+      --r-sm: 12px;
+      --r-md: 20px;
+      --r-lg: 28px;
+      --r-xl: 40px;
+      
+      --shadow-sm: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+      --shadow-md: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+      --shadow-lg: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+      --shadow-glow: 0 0 20px var(--accent-glow);
     }
-    html{scroll-behavior:smooth}
-    body{
-      background:var(--bg);color:var(--text);
-      font-family:var(--font-body);
-      -webkit-font-smoothing:antialiased;
-      overflow-x:hidden;
+    
+    html {
+      scroll-behavior: smooth;
+      background: var(--bg);
     }
-    #root{min-height:100vh;display:flex;flex-direction:column}
-    ::-webkit-scrollbar{width:3px}
-    ::-webkit-scrollbar-track{background:var(--bg2)}
-    ::-webkit-scrollbar-thumb{background:var(--accent);border-radius:2px}
-    ::selection{background:rgba(0,212,255,0.2)}
-    button{font-family:var(--font-body)}
-    input,textarea{font-family:var(--font-body)}
+    
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font-body);
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      overflow-x: hidden;
+      margin: 0;
+    }
+    
+    #root {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .glass-card {
+      background: var(--glass);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--r-md);
+    }
+
+    .text-gradient {
+      background: linear-gradient(135deg, #fff 30%, var(--accent) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    ::-webkit-scrollbar {
+      width: 4px;
+    }
+    ::-webkit-scrollbar-track {
+      background: var(--bg);
+    }
+    ::-webkit-scrollbar-thumb {
+      background: var(--accent);
+      border-radius: 10px;
+    }
+    
+    ::selection {
+      background: var(--accent-glow);
+      color: #fff;
+    }
+
+    button {
+      font-family: var(--font-body);
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      cursor: pointer;
+    }
+    
+    button:active {
+      transform: scale(0.95);
+    }
+
   </style>
 </head>
 <body>

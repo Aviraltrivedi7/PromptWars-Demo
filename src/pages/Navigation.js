@@ -25,66 +25,101 @@ export default function Navigation() {
   };
 
   return (
-    <div className="page-wrap">
+    <div className="page-wrap" style={{ background: 'var(--bg)', minHeight: '100vh' }}>
       <style>{`
-        .nav-hdr{padding:16px;border-bottom:1px solid var(--border)}
-        .nav-form{padding:14px 16px;background:var(--bg2);border-bottom:1px solid var(--border)}
-        .nav-inp{
-          background:var(--card);border:1px solid var(--border2);
-          border-radius:var(--r-md);padding:12px 14px;color:var(--text);
-          font-size:13px;width:100%;outline:none;
-          transition:border-color .2s;
+        .nav-header-premium {
+          padding: 24px 20px;
+          border-bottom: 1px solid var(--glass-border);
         }
-        .nav-inp:focus{border-color:var(--accent)}
-        .nav-select{
-          background:var(--card);border:1px solid var(--border2);
-          border-radius:var(--r-md);padding:12px 14px;color:var(--text);
-          font-size:13px;width:100%;outline:none;cursor:pointer;
-          appearance:none;
+        .nav-setup-box {
+          padding: 24px 20px;
+          background: linear-gradient(180deg, rgba(34, 211, 238, 0.05) 0%, transparent 100%);
         }
-        .nav-select:focus{border-color:var(--accent)}
-        .nav-btn{
-          width:100%;padding:15px;background:var(--accent);border:none;
-          border-radius:var(--r-md);color:#000;font-size:14px;font-weight:700;
-          cursor:pointer;margin-top:12px;transition:opacity .2s;
-          font-family:var(--font-display);letter-spacing:.08em;font-size:18px;
+        .premium-select-box {
+          background: var(--glass);
+          border: 1px solid var(--glass-border);
+          border-radius: 16px;
+          padding: 16px;
+          margin-bottom: 12px;
         }
-        .nav-btn:hover{opacity:.88}
-        .nav-btn:disabled{opacity:.4;cursor:not-allowed}
-        .dest-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;padding:14px 16px}
-        .dest-card{
-          background:var(--card);border:1px solid var(--border);
-          border-radius:var(--r-md);padding:13px;cursor:pointer;transition:all .2s;
+        .nav-select-large {
+          background: transparent;
+          border: none;
+          width: 100%;
+          color: white;
+          font-family: var(--font-display);
+          font-size: 18px;
+          outline: none;
         }
-        .dest-card:hover,.dest-card.sel{border-color:var(--accent);background:rgba(0,212,255,.05)}
-        .active-nav{
-          margin:14px 16px;background:linear-gradient(135deg,var(--card),#162035);
-          border:2px solid var(--accent);border-radius:var(--r-xl);padding:20px;
+        .nav-select-large option { background: #0a0f1e; color: white; }
+        .active-nav-pane {
+          margin: 20px;
+          background: var(--glass);
+          border: 1px solid var(--accent);
+          border-radius: var(--r-xl);
+          padding: 24px;
+          box-shadow: 0 10px 40px var(--accent-glow);
+          animation: slideUp 0.4s cubic-bezier(0.22, 1, 0.36, 1);
         }
-        .step-indicator{
-          display:flex;gap:5px;margin-bottom:16px;
+        .step-progress-bar {
+          display: flex;
+          height: 4px;
+          background: rgba(255,255,255,0.05);
+          border-radius: 100px;
+          overflow: hidden;
+          margin-bottom: 24px;
         }
-        .step-dot{
-          height:4px;flex:1;border-radius:2px;background:var(--border);transition:background .4s;
+        .progress-segment {
+          flex: 1;
+          height: 100%;
+          border-right: 1px solid rgba(0,0,0,0.5);
+          transition: background 0.4s;
         }
-        .step-dot.done{background:var(--accent)}
-        .step-box{
-          background:var(--bg3);border-radius:var(--r-md);padding:14px;margin-bottom:14px;
+        .progress-segment.active { background: var(--accent); }
+        .current-instruction-box {
+          background: rgba(255,255,255,0.03);
+          border-radius: 20px;
+          padding: 20px;
+          border: 1px solid var(--glass-border);
+          margin-bottom: 24px;
         }
-        .step-num{
-          width:28px;height:28px;border-radius:50%;background:var(--accent);
-          display:flex;align-items:center;justify-content:center;
-          font-weight:700;font-size:13px;color:#000;flex-shrink:0;
+        .step-badge {
+          display: inline-flex;
+          padding: 4px 12px;
+          background: var(--accent);
+          color: black;
+          border-radius: 100px;
+          font-size: 10px;
+          font-weight: 800;
+          font-family: var(--font-mono);
+          text-transform: uppercase;
+          margin-bottom: 12px;
         }
-        .step-btn{
-          flex:1;padding:13px;border:none;border-radius:var(--r-md);
-          font-size:14px;font-weight:600;cursor:pointer;transition:all .2s;
+        .dest-card-premium {
+          background: var(--glass);
+          border: 1px solid var(--glass-border);
+          border-radius: var(--r-md);
+          padding: 16px;
+          transition: 0.3s;
+        }
+        .dest-card-premium.selected {
+          border-color: var(--accent);
+          background: rgba(34, 211, 238, 0.15);
+        }
+        .find-btn-premium {
+          width: 100%;
+          padding: 16px;
+          border: none;
+          border-radius: 16px;
+          font-weight: 800;
+          font-family: var(--font-display);
+          cursor: pointer;
         }
       `}</style>
 
-      <div className="nav-hdr">
-        <div style={{fontFamily:'var(--font-display)',fontSize:26,letterSpacing:'.05em'}}>INDOOR NAV 🗺️</div>
-        <div style={{fontSize:11,color:'var(--text2)'}}>Turn-by-turn venue navigation</div>
+      <div className="nav-header-premium">
+        <h2 style={{ fontFamily: 'var(--font-display)', fontSize: 28, letterSpacing: '0.05em', color: 'white' }}>INDOOR NAV</h2>
+        <div style={{ fontSize: 11, color: 'var(--accent)', fontFamily: 'var(--font-mono)' }}>LIVE SPATIAL TRACKING ACTIVE</div>
       </div>
 
       {/* Active navigation */}

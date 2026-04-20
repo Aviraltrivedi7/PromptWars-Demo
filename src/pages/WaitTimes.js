@@ -34,63 +34,79 @@ export default function WaitTimes() {
   ];
 
   return (
-    <div className="page-wrap">
+    <div className="page-wrap" style={{ background: 'var(--bg)', minHeight: '100vh' }}>
       <style>{`
-        .wt-hdr{padding:16px;border-bottom:1px solid var(--border)}
-        .ht-card{
-          margin:14px 16px;background:linear-gradient(135deg,rgba(255,149,0,.08),rgba(255,61,53,.05));
-          border:1px solid rgba(255,149,0,.3);border-radius:var(--r-xl);padding:16px;
+        .wt-header {
+          padding: 24px 20px;
+          border-bottom: 1px solid var(--glass-border);
         }
-        .ht-timer{font-family:var(--font-mono);font-size:32px;font-weight:700;color:var(--orange)}
-        .tab-row{
-          display:flex;gap:8px;overflow-x:auto;padding:0 16px 12px;
-          scrollbar-width:none;
+        .timer-card {
+          margin: 20px;
+          padding: 24px;
+          background: linear-gradient(135deg, rgba(251, 146, 60, 0.1) 0%, rgba(248, 113, 113, 0.1) 100%);
+          border: 1px solid rgba(251, 146, 60, 0.3);
+          border-radius: var(--r-lg);
+          position: relative;
+          overflow: hidden;
         }
-        .tab-row::-webkit-scrollbar{display:none}
-        .wt-tab{
-          background:var(--card);border:1px solid var(--border);
-          border-radius:100px;padding:8px 16px;font-size:12px;
-          cursor:pointer;white-space:nowrap;color:var(--text2);
-          transition:all .2s;flex-shrink:0;
+        .timer-val {
+          font-family: var(--font-mono);
+          font-size: 40px;
+          font-weight: 800;
+          color: var(--orange);
+          text-shadow: 0 0 20px rgba(251, 146, 60, 0.3);
         }
-        .wt-tab.active{background:var(--accent);color:#000;border-color:var(--accent);font-weight:700}
-        .best-banner{
-          margin:0 16px 10px;
-          background:rgba(0,230,118,.07);border:1px solid rgba(0,230,118,.3);
-          border-radius:var(--r-md);padding:10px 14px;
-          display:flex;align-items:center;gap:10;
+        .tab-strip {
+          display: flex;
+          gap: 10px;
+          overflow-x: auto;
+          padding: 0 20px 20px;
+          scrollbar-width: none;
         }
-        .wait-row{
-          display:flex;align-items:stretch;gap:0;
-          background:var(--card);border:1px solid var(--border);
-          border-radius:var(--r-md);margin:0 16px 8px;overflow:hidden;
-          cursor:default;
+        .tab-strip::-webkit-scrollbar { display: none; }
+        .wt-chip {
+          background: var(--glass);
+          border: 1px solid var(--glass-border);
+          padding: 10px 20px;
+          border-radius: 100px;
+          font-size: 13px;
+          font-weight: 600;
+          color: var(--text-muted);
+          white-space: nowrap;
+          transition: 0.3s;
         }
-        .wait-row.best{border-color:rgba(0,230,118,.45)}
-        .wait-accent-bar{width:4px;flex-shrink:0}
-        .wait-body{flex:1;padding:13px}
-        .wait-bar-track{height:4px;background:var(--bg3);border-radius:2px;margin-top:7px}
-        .wait-bar-fill{height:100%;border-radius:2px;transition:width 1s}
-        .chart-box{
-          margin:0 16px 16px;background:var(--card);border:1px solid var(--border);
-          border-radius:var(--r-lg);padding:14px 6px 6px;
+        .wt-chip.active {
+          background: var(--accent);
+          color: black;
+          border-color: var(--accent);
+          box-shadow: 0 0 15px var(--accent-glow);
         }
-        .best-badge{
-          background:rgba(0,230,118,.18);border:1px solid rgba(0,230,118,.4);
-          border-radius:100px;padding:2px 9px;font-size:9px;color:var(--green);font-weight:700;
-          flex-shrink:0;
+        .facility-card {
+          margin: 0 20px 12px;
+          background: var(--glass);
+          border: 1px solid var(--glass-border);
+          border-radius: var(--r-md);
+          padding: 16px;
+          display: flex;
+          align-items: center;
+          gap: 16px;
+          transition: transform 0.2s;
         }
-        .park-status{
-          border-radius:100px;padding:3px 10px;font-size:10px;font-weight:700;
+        .facility-card:active { transform: scale(0.98); }
+        .wait-circle {
+          width: 48px;
+          height: 48px;
+          border-radius: 50%;
+          border: 3px solid var(--glass-border);
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
         }
+        .wait-time { font-family: var(--font-mono); font-size: 16px; font-weight: 800; line-height: 1; }
+        .wait-unit { font-size: 8px; text-transform: uppercase; font-weight: 600; opacity: 0.6; }
       `}</style>
 
-      <div className="wt-hdr">
-        <div style={{fontFamily:'var(--font-display)',fontSize:26,letterSpacing:'.05em'}}>WAIT TIMES</div>
-        <div style={{fontSize:11,color:'var(--text2)',fontFamily:'var(--font-mono)'}}>AI-predicted · live updates</div>
-      </div>
-
-      {/* Halftime countdown */}
       <div className="ht-card">
         <div style={{display:'flex',justifyContent:'space-between',alignItems:'flex-start'}}>
           <div>

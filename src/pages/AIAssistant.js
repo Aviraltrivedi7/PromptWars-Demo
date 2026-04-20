@@ -62,8 +62,8 @@ const SUGGESTIONS_POST = [
 
 export default function AIAssistant() {
   const [msgs, setMsgs] = useState([{
-    role:'ai',
-    content:"Hey! I'm your StadiumSense AI 👋\n\nI have live data on crowd density, wait times, food, parking and facilities across the entire venue.\n\nHow can I help you right now?",
+    role: 'ai',
+    content: "Greetings! I am StadiumSense AI, your holographic venue assistant. I have live access to crowd density, gate wait times, and facility maps. How can I enhance your match experience today?",
     time: new Date(),
   }]);
   const [input, setInput] = useState('');
@@ -72,132 +72,180 @@ export default function AIAssistant() {
   const bottomRef = useRef(null);
   const inputRef = useRef(null);
 
-  useEffect(()=>{ bottomRef.current?.scrollIntoView({behavior:'smooth'}); },[msgs]);
+  useEffect(() => { bottomRef.current?.scrollIntoView({ behavior: 'smooth' }); }, [msgs]);
 
-  const send = async(text) => {
+  const send = async (text) => {
     const msg = text || input.trim();
-    if(!msg || loading) return;
+    if (!msg || loading) return;
     setInput('');
     setShowSuggestions(false);
-    const userMsg = {role:'user', content:msg, time:new Date()};
-    setMsgs(prev=>[...prev, userMsg]);
+    const userMsg = { role: 'user', content: msg, time: new Date() };
+    setMsgs(prev => [...prev, userMsg]);
     setLoading(true);
 
     try {
-      const history = msgs.map(m=>({
-        role: m.role==='ai'?'model':'user',
-        parts:[{text:m.content}]
+      const history = msgs.map(m => ({
+        role: m.role === 'ai' ? 'model' : 'user',
+        parts: [{ text: m.content }]
       }));
 
       const res = await fetch(
         `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`,
         {
-          method:'POST',
-          headers:{'Content-Type':'application/json'},
-          body:JSON.stringify({
-            system_instruction:{parts:[{text:SYSTEM}]},
-            contents:[...history, {role:'user',parts:[{text:msg}]}],
-            generationConfig:{temperature:.75, maxOutputTokens:350, topP:.9}
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            system_instruction: { parts: [{ text: SYSTEM }] },
+            contents: [...history, { role: 'user', parts: [{ text: msg }] }],
+            generationConfig: { temperature: .75, maxOutputTokens: 350, topP: .9 }
           })
         }
       );
       const data = await res.json();
       const reply = data.candidates?.[0]?.content?.parts?.[0]?.text
         || (data.error ? `API Error: ${data.error.message}` : "I'm having trouble right now. Please try again!");
-      setMsgs(prev=>[...prev,{role:'ai',content:reply,time:new Date()}]);
+      setMsgs(prev => [...prev, { role: 'ai', content: reply, time: new Date() }]);
       setShowSuggestions(true);
-    } catch(e) {
-      setMsgs(prev=>[...prev,{role:'ai',content:`⚠️ Connection issue.\n\nMake sure you've added your Gemini API key in AIAssistant.js line 5.\n\nGet a free key at: aistudio.google.com`,time:new Date()}]);
+    } catch (e) {
+      setMsgs(prev => [...prev, { role: 'ai', content: `⚠️ Connection issue.\n\nMake sure you've added your Gemini API key in AIAssistant.js line 5.\n\nGet a free key at: aistudio.google.com`, time: new Date() }]);
     }
     setLoading(false);
   };
 
-  const fmt = (t) => t.toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'});
+  const fmt = (t) => t.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
   return (
-    <div style={{display:'flex',flexDirection:'column',height:'100vh',maxHeight:'100vh'}}>
+    <div style={{ display: 'flex', flexDirection: 'column', height: '100vh', background: 'var(--bg)' }}>
       <style>{`
-        .ai-header{
-          background:var(--bg2);border-bottom:1px solid var(--border);
-          padding:14px 16px;display:flex;align-items:center;gap:12;
-          flex-shrink:0;
+        .ai-header-premium {
+          background: linear-gradient(180deg, rgba(34, 211, 238, 0.1) 0%, transparent 100%);
+          padding: 24px 20px;
+          display: flex;
+          align-items: center;
+          gap: 16px;
+          border-bottom: 1px solid var(--glass-border);
         }
-        .ai-avatar{
-          width:42px;height:42px;border-radius:14px;flex-shrink:0;
-          background:linear-gradient(135deg,var(--accent),#0077cc);
-          display:flex;align-items:center;justify-content:center;font-size:22px;
-          box-shadow:0 0 16px rgba(0,212,255,.3);
+        .ai-orb-container {
+          width: 56px;
+          height: 56px;
+          position: relative;
         }
-        .msgs{flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:10}
-        .msg-user{
-          align-self:flex-end;max-width:82%;
-          background:linear-gradient(135deg,var(--accent),#0088cc);
-          color:#000;border-radius:18px 18px 4px 18px;
-          padding:11px 15px;font-size:13.5px;font-weight:500;
-          box-shadow:0 2px 12px rgba(0,212,255,.25);
+        .ai-orb-img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          border-radius: 50%;
+          box-shadow: 0 0 20px var(--accent-glow);
+          animation: orbFloat 3s ease-in-out infinite;
         }
-        .msg-ai{
-          align-self:flex-start;max-width:92%;
-          background:var(--card);border:1px solid var(--border2);
-          color:var(--text);border-radius:4px 18px 18px 18px;
-          padding:12px 15px;font-size:13.5px;line-height:1.65;
-          white-space:pre-wrap;
+        @keyframes orbFloat {
+          0%, 100% { transform: translateY(0); }
+          50% { transform: translateY(-5px); }
         }
-        .msg-time{font-size:9px;color:var(--text3);margin-top:4px;text-align:right}
-        .typing{display:flex;gap:5px;align-items:center;padding:3px 0}
-        .typing span{
-          width:7px;height:7px;border-radius:50%;background:var(--accent);
-          animation:tbounce 1s infinite;
+        .ai-title {
+          font-family: var(--font-display);
+          font-size: 22px;
+          letter-spacing: 0.05em;
+          color: white;
         }
-        .typing span:nth-child(2){animation-delay:.2s}
-        .typing span:nth-child(3){animation-delay:.4s}
-        @keyframes tbounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
-        .quick-strip{
-          display:flex;gap:7px;overflow-x:auto;padding:10px 14px 6px;
-          scrollbar-width:none;-webkit-overflow-scrolling:touch;flex-shrink:0;
+        .ai-status {
+          font-size: 10px;
+          font-family: var(--font-mono);
+          color: var(--accent);
+          display: flex;
+          align-items: center;
+          gap: 6px;
         }
-        .quick-strip::-webkit-scrollbar{display:none}
-        .qpill{
-          background:var(--card);border:1px solid var(--border2);
-          border-radius:100px;padding:8px 14px;
-          font-size:12px;white-space:nowrap;cursor:pointer;
-          color:var(--text2);transition:all .2s;flex-shrink:0;
+        .chat-msgs {
+          flex: 1;
+          padding: 20px;
+          overflow-y: auto;
+          display: flex;
+          flex-direction: column;
+          gap: 16px;
         }
-        .qpill:hover{border-color:var(--accent);color:var(--accent);background:rgba(0,212,255,.06)}
-        .input-zone{
-          padding:10px 14px;
-          background:var(--bg2);border-top:1px solid var(--border);
-          display:flex;gap:10px;align-items:flex-end;flex-shrink:0;
-          padding-bottom:max(12px,env(safe-area-inset-bottom));
+        .m-user {
+          align-self: flex-end;
+          max-width: 80%;
+          background: var(--accent);
+          color: black;
+          padding: 12px 18px;
+          border-radius: 20px 20px 4px 20px;
+          font-size: 14px;
+          font-weight: 600;
+          box-shadow: 0 4px 15px var(--accent-glow);
         }
-        .inp{
-          flex:1;background:var(--card);border:1px solid var(--border2);
-          border-radius:14px;padding:11px 14px;color:var(--text);
-          font-size:14px;resize:none;outline:none;
-          min-height:44px;max-height:110px;line-height:1.45;
-          transition:border-color .2s;
+        .m-ai {
+          align-self: flex-start;
+          max-width: 85%;
+          background: var(--glass);
+          backdrop-filter: blur(10px);
+          border: 1px solid var(--glass-border);
+          color: var(--text);
+          padding: 14px 18px;
+          border-radius: 4px 20px 20px 20px;
+          font-size: 14px;
+          line-height: 1.6;
         }
-        .inp:focus{border-color:var(--accent)}
-        .inp::placeholder{color:var(--text3)}
-        .send{
-          width:44px;height:44px;border-radius:13px;flex-shrink:0;
-          background:var(--accent);border:none;cursor:pointer;
-          display:flex;align-items:center;justify-content:center;
-          font-size:19px;transition:all .2s;
+        .m-time {
+          font-size: 9px;
+          color: var(--text-dim);
+          margin-top: 6px;
+          font-family: var(--font-mono);
         }
-        .send:hover:not(:disabled){transform:scale(1.07);box-shadow:0 0 16px rgba(0,212,255,.4)}
-        .send:disabled{opacity:.45;cursor:not-allowed}
-        .live-badge{
-          display:inline-flex;align-items:center;gap:5px;
-          background:rgba(0,230,118,.1);border:1px solid rgba(0,230,118,.25);
-          border-radius:100px;padding:3px 10px;font-size:10px;
-          color:var(--green);font-family:var(--font-mono);margin-left:8px;
+        .ai-input-zone {
+          padding: 16px 20px calc(24px + env(safe-area-inset-bottom));
+          background: var(--bg);
+          border-top: 1px solid var(--glass-border);
+          display: flex;
+          gap: 12px;
+        }
+        .ai-inp {
+          flex: 1;
+          background: var(--glass);
+          border: 1px solid var(--glass-border);
+          border-radius: 16px;
+          padding: 12px 16px;
+          color: white;
+          font-size: 14px;
+          outline: none;
+          resize: none;
+          transition: 0.3s;
+        }
+        .ai-inp:focus { border-color: var(--accent); box-shadow: 0 0 10px var(--accent-glow); }
+        .ai-send {
+          width: 48px;
+          height: 44px;
+          background: var(--accent);
+          border: none;
+          border-radius: 14px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 20px;
+          font-weight: 800;
+        }
+        .ai-send:disabled { opacity: 0.4; }
+        .suggestions {
+          display: flex;
+          gap: 8px;
+          overflow-x: auto;
+          padding: 0 20px 12px;
+          scrollbar-width: none;
+        }
+        .suggestions::-webkit-scrollbar { display: none; }
+        .sug-pill {
+          background: var(--glass);
+          border: 1px solid var(--glass-border);
+          padding: 8px 16px;
+          border-radius: 100px;
+          font-size: 12px;
+          color: var(--text-muted);
+          white-space: nowrap;
         }
       `}</style>
 
       {/* Header */}
-      <div className="ai-header" style={{gap:12}}>
-        <div className="ai-avatar">🧠</div>
         <div style={{flex:1}}>
           <div style={{fontWeight:700,fontSize:15}}>StadiumSense AI</div>
           <div style={{display:'flex',alignItems:'center'}}>

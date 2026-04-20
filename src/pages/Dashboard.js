@@ -34,83 +34,173 @@ export default function Dashboard() {
   const pct = Math.round((VENUE.currentAttendees/VENUE.capacity)*100);
 
   return (
-    <div className="page-wrap" style={{padding:'0 0 8px'}}>
+    <div className="page-wrap" style={{ padding: '20px 0' }}>
       <style>{`
-        .dash-header{
-          padding:16px 16px 12px;
-          background:linear-gradient(180deg,rgba(0,212,255,.04) 0%,transparent 100%);
-          border-bottom:1px solid var(--border);
+        .dash-container {
+          padding: 0 20px;
         }
-        .match-card{
-          margin:12px 16px;
-          background:linear-gradient(135deg,var(--card),#162035);
-          border:1px solid var(--border2);border-radius:var(--r-xl);
-          padding:18px;position:relative;overflow:hidden;
+        .live-match-header {
+          position: relative;
+          background: linear-gradient(180deg, rgba(34, 211, 238, 0.1) 0%, transparent 100%);
+          padding: 24px 20px;
+          border-radius: var(--r-lg);
+          border: 1px solid var(--glass-border);
+          overflow: hidden;
+          margin-bottom: 24px;
         }
-        .match-card::before{
-          content:'';position:absolute;inset:0;
-          background:linear-gradient(135deg,rgba(0,212,255,.04) 0%,transparent 55%);
+        .match-bg {
+          position: absolute;
+          inset: 0;
+          background: url('/team-logos.png') center/cover no-repeat;
+          opacity: 0.2;
+          filter: blur(20px);
         }
-        .team-score{font-family:var(--font-mono);font-size:22px;font-weight:700}
-        .vs-badge{
-          background:rgba(255,107,53,.15);border:1px solid rgba(255,107,53,.3);
-          border-radius:8px;padding:4px 12px;font-size:11px;color:var(--accent2);
-          font-family:var(--font-mono);font-weight:700;
+        .match-content {
+          position: relative;
+          z-index: 1;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
         }
-        .stats-grid{
-          display:grid;grid-template-columns:repeat(3,1fr);gap:8px;
-          padding:0 16px;margin:12px 0;
+        .team-box {
+          text-align: center;
+          width: 80px;
         }
-        .scard{
-          background:var(--card);border:1px solid var(--border);
-          border-radius:var(--r-md);padding:12px 10px;text-align:center;
+        .team-logo {
+          width: 56px;
+          height: 56px;
+          margin: 0 auto 10px;
+          background: var(--glass);
+          border-radius: 50%;
+          border: 1px solid var(--glass-border);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 24px;
+          box-shadow: 0 0 20px rgba(0,0,0,0.3);
         }
-        .scard-num{font-family:var(--font-mono);font-size:20px;font-weight:700}
-        .scard-lbl{font-size:9px;color:var(--text2);text-transform:uppercase;letter-spacing:.08em;margin-top:3px}
-        .section-hdr{
-          display:flex;justify-content:space-between;align-items:center;
-          padding:0 16px;margin:16px 0 8px;
+        .score-box {
+          text-align: center;
         }
-        .section-ttl{font-size:11px;letter-spacing:.12em;color:var(--text2);text-transform:uppercase;font-family:var(--font-mono)}
-        .see-all{font-size:12px;color:var(--accent);cursor:pointer;background:none;border:none;padding:0}
-        .chart-wrap{
-          margin:0 16px;background:var(--card);border:1px solid var(--border);
-          border-radius:var(--r-lg);padding:14px 8px 6px;
+        .live-badge-premium {
+          display: inline-flex;
+          align-items: center;
+          gap: 6px;
+          background: var(--red);
+          color: white;
+          padding: 2px 8px;
+          border-radius: 4px;
+          font-size: 10px;
+          font-weight: 800;
+          letter-spacing: 0.1em;
+          margin-bottom: 8px;
+          animation: pulse 2s infinite;
         }
-        .zones-grid{
-          display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:0 16px;
+        @keyframes pulse {
+          0%, 100% { opacity: 1; }
+          50% { opacity: 0.7; }
         }
-        .zone-card{
-          border-radius:var(--r-md);padding:12px 14px;cursor:pointer;transition:transform .15s;
+        .grid-stats {
+          display: grid;
+          grid-template-columns: repeat(3, 1fr);
+          gap: 12px;
+          margin-bottom: 24px;
         }
-        .zone-card:active{transform:scale(.97)}
-        .zone-pct-bar{height:4px;border-radius:2px;background:var(--bg3);margin-top:8px;overflow:hidden}
-        .zone-pct-fill{height:100%;border-radius:2px;transition:width 1s ease}
-        .alert-item{
-          display:flex;align-items:flex-start;gap:10px;
-          background:var(--card);border:1px solid var(--border);
-          border-radius:var(--r-md);padding:12px;margin:0 16px 8px;
-          transition:border-color .2s;
+        .stat-card {
+          background: var(--glass);
+          border: 1px solid var(--glass-border);
+          border-radius: var(--r-md);
+          padding: 16px 10px;
+          text-align: center;
         }
-        .alert-item.urgent{border-color:rgba(255,61,87,.3)}
-        .quick-actions{
-          display:grid;grid-template-columns:repeat(4,1fr);gap:8px;
-          padding:0 16px;margin-bottom:8px;
+        .stat-val {
+          font-family: var(--font-mono);
+          font-size: 20px;
+          font-weight: 700;
+          color: var(--accent);
+          display: block;
         }
-        .qa-btn{
-          background:var(--card);border:1px solid var(--border);
-          border-radius:var(--r-md);padding:14px 6px;
-          display:flex;flex-direction:column;align-items:center;gap:5px;
-          cursor:pointer;transition:all .2s;
+        .stat-label {
+          font-size: 10px;
+          color: var(--text-dim);
+          text-transform: uppercase;
+          margin-top: 4px;
+          letter-spacing: 0.05em;
         }
-        .qa-btn:hover{border-color:var(--accent);background:rgba(0,212,255,.05)}
-        .qa-btn .qi{font-size:22px}
-        .qa-btn .ql{font-size:10px;color:var(--text2);text-align:center;line-height:1.2}
+        .section-header {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          margin-bottom: 12px;
+        }
+        .section-title {
+          font-family: var(--font-display);
+          font-size: 22px;
+          letter-spacing: 0.05em;
+          color: white;
+        }
+        .glass-btn {
+          background: var(--glass);
+          border: 1px solid var(--glass-border);
+          color: var(--accent);
+          padding: 6px 12px;
+          border-radius: 100px;
+          font-size: 12px;
+          text-transform: uppercase;
+          font-weight: 600;
+        }
+        .quick-actions-grid {
+          display: grid;
+          grid-template-columns: repeat(4, 1fr);
+          gap: 10px;
+          margin-bottom: 32px;
+        }
+        .action-card {
+          background: var(--glass);
+          border: 1px solid var(--glass-border);
+          border-radius: var(--r-md);
+          padding: 16px 8px;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          gap: 8px;
+          transition: all 0.3s;
+        }
+        .action-card:hover {
+          background: rgba(34, 211, 238, 0.1);
+          border-color: var(--accent);
+        }
+        .action-icon {
+          font-size: 24px;
+        }
+        .action-label {
+          font-size: 11px;
+          font-weight: 600;
+          color: var(--text-muted);
+          text-align: center;
+        }
+        .zone-pill {
+          background: var(--glass);
+          border: 1px solid var(--glass-border);
+          border-radius: var(--r-md);
+          padding: 14px 16px;
+          display: flex;
+          align-items: center;
+          gap: 16px;
+          margin-bottom: 10px;
+          transition: transform 0.2s;
+        }
+        .zone-pill:active { transform: scale(0.98); }
+        .zone-info { flex: 1; }
+        .zone-name { font-size: 15px; font-weight: 700; color: white; display: block; }
+        .zone-sub { font-size: 12px; color: var(--text-dim); }
+        .zone-status { text-align: right; }
+        .zone-density { font-family: var(--font-mono); font-size: 16px; font-weight: 700; }
       `}</style>
 
-      {/* Header */}
-      <div className="dash-header">
-        <div style={{display:'flex',justifyContent:'space-between',alignItems:'center'}}>
+      <div className="dash-container">
+        {/* Top Bar */}
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24 }}>
           <div>
             <div style={{fontFamily:'var(--font-display)',fontSize:26,color:'var(--accent)',letterSpacing:'.05em'}}>STADIUMSENSE</div>
             <div style={{fontSize:11,color:'var(--text2)',fontFamily:'var(--font-mono)'}}>

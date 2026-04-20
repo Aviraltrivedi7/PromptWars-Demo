@@ -41,82 +41,102 @@ export default function Emergency() {
   const cancelSOS = () => { setSosActive(false); setSent(false); setCountdown(5); };
 
   return (
-    <div className="page-wrap">
+    <div className="page-wrap" style={{ background: 'var(--bg)', minHeight: '100vh' }}>
       <style>{`
-        .em-hdr{
-          padding:16px;background:rgba(255,61,87,.04);
-          border-bottom:1px solid rgba(255,61,87,.2);
+        .em-header-premium {
+          padding: 24px 20px;
+          border-bottom: 1px solid rgba(239, 68, 68, 0.2);
+          background: linear-gradient(180deg, rgba(239, 68, 68, 0.1) 0%, transparent 100%);
         }
-        .sos-btn{
-          width:calc(100% - 32px);margin:16px;padding:22px;
-          background:linear-gradient(135deg,#ff1744,#c62828);
-          border:none;border-radius:var(--r-xl);
-          font-family:var(--font-display);font-size:36px;letter-spacing:.12em;
-          color:#fff;cursor:pointer;transition:all .2s;
-          box-shadow:0 0 0 0 rgba(255,23,68,.5);
-          animation:sosPulse 2s infinite;
+        .sos-container {
+          padding: 32px 20px;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
         }
-        @keyframes sosPulse{
-          0%,100%{box-shadow:0 0 0 0 rgba(255,23,68,.5)}
-          50%{box-shadow:0 0 0 18px rgba(255,23,68,0)}
+        .sos-ring-outer {
+          position: relative;
+          width: 220px;
+          height: 220px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
         }
-        .sos-btn.sent{
-          background:linear-gradient(135deg,#00c853,#1b5e20);
-          animation:none;
+        .sos-ring {
+          position: absolute;
+          inset: 0;
+          border-radius: 50%;
+          border: 2px solid var(--red);
+          opacity: 0.3;
+          animation: sosPulse 2s infinite;
         }
-        .sos-btn.counting{
-          animation:countPulse .5s infinite;
+        .sos-ring:nth-child(2) { animation-delay: 0.5s; }
+        .sos-ring:nth-child(3) { animation-delay: 1s; }
+        @keyframes sosPulse {
+          0% { transform: scale(1); opacity: 0.3; }
+          100% { transform: scale(1.5); opacity: 0; }
         }
-        @keyframes countPulse{
-          0%,100%{transform:scale(1)}50%{transform:scale(1.02)}
+        .sos-button-premium {
+          width: 160px;
+          height: 160px;
+          background: var(--red);
+          border-radius: 50%;
+          border: 8px solid rgba(255,255,255,0.1);
+          color: white;
+          font-family: var(--font-display);
+          font-size: 32px;
+          font-weight: 800;
+          letter-spacing: 0.05em;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          cursor: pointer;
+          box-shadow: 0 0 50px rgba(239, 68, 68, 0.5);
+          transition: 0.3s;
+          position: relative;
+          z-index: 2;
         }
-        .cancel-btn{
-          width:calc(100% - 32px);margin:-8px 16px 16px;
-          padding:12px;background:transparent;border:1px solid var(--border2);
-          border-radius:var(--r-md);color:var(--text2);cursor:pointer;
-          font-size:13px;transition:all .2s;
+        .sos-button-premium:active { transform: scale(0.95); }
+        .sos-button-premium.active { animation: shake 0.1s infinite; }
+        @keyframes shake {
+          0% { transform: translate(1px, 1px) rotate(0deg); }
+          50% { transform: translate(-1px, -2px) rotate(-1deg); }
+          100% { transform: translate(1px, -1px) rotate(1deg); }
         }
-        .cancel-btn:hover{border-color:var(--red);color:var(--red)}
-        .em-type{
-          display:flex;align-items:center;gap:12px;
-          background:var(--card);border:1px solid var(--border);
-          border-radius:var(--r-md);padding:13px;margin:0 16px 8px;
-          cursor:pointer;transition:all .2s;
+        .emergency-grid {
+          display: grid;
+          grid-template-columns: repeat(2, 1fr);
+          gap: 12px;
+          padding: 0 20px 32px;
         }
-        .em-type.sel{border-color:var(--red);background:rgba(255,61,87,.05)}
-        .em-type:hover{transform:translateX(4px)}
-        .exit-card{
-          background:var(--card);border:1px solid var(--border);
-          border-radius:var(--r-md);margin:0 16px 8px;overflow:hidden;
+        .type-glass {
+          background: var(--glass);
+          border: 1px solid var(--glass-border);
+          border-radius: var(--r-md);
+          padding: 16px;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          gap: 8px;
+          transition: 0.3s;
         }
-        .exit-card.best{border-color:rgba(0,230,118,.4)}
-        .exit-body{padding:13px;display:flex;justify-content:space-between;align-items:center}
-        .helpline{
-          display:flex;justify-content:space-between;align-items:center;
-          background:var(--card);border:1px solid var(--border);
-          border-radius:var(--r-md);padding:13px;margin:0 16px 8px;
+        .type-glass.selected {
+          border-color: var(--red);
+          background: rgba(239, 68, 68, 0.1);
         }
-        .call-btn{
-          background:rgba(0,212,255,.1);border:1px solid rgba(0,212,255,.3);
-          border-radius:8px;padding:7px 16px;font-size:12px;
-          color:var(--accent);cursor:pointer;font-weight:700;transition:all .2s;
+        .exit-pill {
+          background: var(--glass);
+          border: 1px solid var(--glass-border);
+          border-radius: var(--r-md);
+          padding: 16px 20px;
+          margin: 0 20px 10px;
+          display: flex;
+          align-items: center;
+          gap: 16px;
         }
-        .call-btn:hover{background:var(--accent);color:#000}
-        .first-aid{
-          display:flex;justify-content:space-between;align-items:center;
-          padding:10px 14px;background:var(--card);border:1px solid var(--border);
-          border-radius:var(--r-md);margin:0 16px 7px;
-        }
-        .sec-hdr{
-          padding:16px 16px 8px;
-          font-size:11px;color:var(--text2);font-family:var(--font-mono);
-          letter-spacing:.1em;text-transform:uppercase;
-        }
+        .exit-pill.best { border-color: var(--green); background: rgba(34, 197, 94, 0.05); }
       `}</style>
 
-      <div className="em-hdr">
-        <div style={{fontFamily:'var(--font-display)',fontSize:26,color:'var(--red)',letterSpacing:'.05em'}}>🚨 EMERGENCY</div>
-        <div style={{fontSize:11,color:'var(--text2)'}}>Tap SOS to instantly alert stadium security</div>
       </div>
 
       {/* SOS Button */}

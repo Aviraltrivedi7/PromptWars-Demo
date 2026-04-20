@@ -13,57 +13,118 @@ const TABS = [
 export default function BottomNav() {
   const nav = useNavigate();
   const loc = useLocation();
+  
   return (
     <>
       <style>{`
-        .bnav{
-          position:fixed;bottom:0;left:50%;transform:translateX(-50%);
-          width:100%;max-width:480px;z-index:999;
-          background:rgba(6,10,18,0.97);
-          border-top:1px solid var(--border2);
-          backdrop-filter:blur(24px);
-          display:flex;justify-content:space-around;align-items:stretch;
-          padding:6px 0 max(10px,env(safe-area-inset-bottom));
+        .bnav-container {
+          position: fixed;
+          bottom: 20px;
+          left: 50%;
+          transform: translateX(-50%);
+          width: 90%;
+          max-width: 440px;
+          z-index: 1000;
         }
-        .bnav-tab{
-          flex:1;display:flex;flex-direction:column;align-items:center;
-          justify-content:center;gap:3px;cursor:pointer;
-          padding:6px 2px;border:none;background:none;
-          border-radius:10px;transition:all .2s;position:relative;
-          -webkit-tap-highlight-color:transparent;
+        
+        .bnav {
+          background: var(--glass);
+          backdrop-filter: blur(20px);
+          -webkit-backdrop-filter: blur(20px);
+          border: 1px solid var(--glass-border);
+          border-radius: 24px;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          padding: 8px 12px;
+          box-shadow: 0 10px 40px rgba(0,0,0,0.4);
         }
-        .bnav-tab .ico{font-size:20px;line-height:1;transition:transform .2s}
-        .bnav-tab .lbl{font-size:9px;font-weight:600;letter-spacing:.06em;color:var(--text3);transition:color .2s;text-transform:uppercase}
-        .bnav-tab.active .lbl{color:var(--accent)}
-        .bnav-tab.active .ico{transform:scale(1.18)}
-        .bnav-tab.sos .lbl{color:var(--red)!important}
-        .bnav-tab.sos.active{background:rgba(255,61,87,.12)!important;border-radius:12px}
-        .bnav-tab.active{background:rgba(0,212,255,.08);border-radius:12px}
-        .bnav-pip{
-          position:absolute;top:4px;right:calc(50% - 14px);
-          width:7px;height:7px;border-radius:50%;background:var(--red);
-          border:2px solid var(--bg);animation:pipPulse 2s infinite;
+        
+        .bnav-tab {
+          flex: 1;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          gap: 4px;
+          cursor: pointer;
+          padding: 10px 0;
+          border: none;
+          background: none;
+          border-radius: 16px;
+          transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+          color: var(--text-dim);
+          position: relative;
         }
-        @keyframes pipPulse{0%,100%{opacity:1}50%{opacity:.3}}
-        .page-wrap{padding-bottom:80px}
+        
+        .bnav-tab .ico {
+          font-size: 20px;
+          transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        
+        .bnav-tab .lbl {
+          font-size: 10px;
+          font-weight: 700;
+          letter-spacing: 0.05em;
+          text-transform: uppercase;
+        }
+        
+        .bnav-tab.active {
+          color: var(--accent);
+          background: rgba(34, 211, 238, 0.1);
+        }
+        
+        .bnav-tab.active .ico {
+          transform: translateY(-4px) scale(1.1);
+          filter: drop-shadow(0 0 8px var(--accent-glow));
+        }
+        
+        .bnav-tab.sos {
+          color: var(--red);
+        }
+        
+        .bnav-tab.sos.active {
+          background: rgba(248, 113, 113, 0.1);
+        }
+
+        .ai-glow {
+          position: absolute;
+          inset: 0;
+          border-radius: 16px;
+          box-shadow: 0 0 15px var(--accent-glow);
+          opacity: 0;
+          transition: opacity 0.3s;
+          pointer-events: none;
+        }
+        
+        .bnav-tab.active .ai-glow {
+          opacity: 0.5;
+        }
+
+        .page-wrap {
+          padding-bottom: 120px;
+        }
       `}</style>
-      <nav className="bnav">
-        {TABS.map(t => {
-          const active = loc.pathname === t.path;
-          const isSOS  = t.path === '/emergency';
-          const isAI   = t.path === '/ai';
-          return (
-            <button key={t.path}
-              className={`bnav-tab ${active?'active':''} ${isSOS?'sos':''}`}
-              onClick={() => nav(t.path)}
-            >
-              {isAI && <div className="bnav-pip"/>}
-              <span className="ico">{t.icon}</span>
-              <span className="lbl">{t.label}</span>
-            </button>
-          );
-        })}
-      </nav>
+      <div className="bnav-container">
+        <nav className="bnav">
+          {TABS.map(t => {
+            const active = loc.pathname === t.path;
+            const isSOS  = t.path === '/emergency';
+            const isAI   = t.path === '/ai';
+            return (
+              <button key={t.path}
+                className={`bnav-tab ${active?'active':''} ${isSOS?'sos':''}`}
+                onClick={() => nav(t.path)}
+              >
+                {isAI && active && <div className="ai-glow"/>}
+                <span className="ico">{t.icon}</span>
+                <span className="lbl">{t.label}</span>
+              </button>
+            );
+          })}
+        </nav>
+      </div>
     </>
   );
 }
+

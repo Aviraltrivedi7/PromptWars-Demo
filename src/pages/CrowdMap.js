@@ -1,12 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { ZONES } from '../data/venueData';
 
-function clr(c){
-  if(c>=85) return {fill:'rgba(255,61,87,.45)',stroke:'#ff3d57',txt:'#ff6b7a',lbl:'PACKED'};
-  if(c>=60) return {fill:'rgba(255,214,0,.30)',stroke:'#ffd600',txt:'#ffd600',lbl:'BUSY'};
-  return           {fill:'rgba(0,230,118,.28)',stroke:'#00e676',txt:'#00e676',lbl:'OPEN'};
-}
-
 const GATES = [
   {x:44,y:0,label:'G1'},{x:56,y:0,label:'G2'},
   {x:50,y:99,label:'G3'},
@@ -26,54 +20,116 @@ export default function CrowdMap() {
   },[]);
 
   const sel = selected!=null ? {...ZONES[selected], crowd:Math.round(live[selected])} : null;
-
   const overallPct = Math.round(live.filter((_,i)=>ZONES[i].w>0).reduce((s,c)=>s+c,0)/live.filter((_,i)=>ZONES[i].w>0).length);
 
   return (
-    <div className="page-wrap">
+    <div className="page-wrap" style={{ background: 'var(--bg)', minHeight: '100vh' }}>
       <style>{`
-        .map-hdr{padding:16px;border-bottom:1px solid var(--border)}
-        .map-card{
-          margin:14px 16px;background:var(--card);border:1px solid var(--border2);
-          border-radius:var(--r-xl);padding:16px;
+        .map-header-premium {
+          padding: 24px 20px;
+          border-bottom: 1px solid var(--glass-border);
         }
-        .zone-svg-rect{cursor:pointer;transition:opacity .25s}
-        .zone-svg-rect:hover{opacity:.75}
-        .legend{display:flex;gap:14px;justify-content:center;margin-top:10px}
-        .leg-item{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--text2)}
-        .leg-dot{width:10px;height:10px;border-radius:3px}
-        .detail-card{
-          margin:0 16px 14px;background:var(--card);border:1px solid var(--border2);
-          border-radius:var(--r-lg);padding:16px;animation:fadeUp .3s ease;
+        .map-container-glass {
+          margin: 20px;
+          background: var(--glass);
+          border: 1px solid var(--glass-border);
+          border-radius: var(--r-xl);
+          padding: 24px;
+          position: relative;
         }
-        @keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
-        .mini-stats{display:flex;gap:8px;margin-top:12px}
-        .mini-stat{flex:1;background:var(--bg3);border-radius:10px;padding:10px;text-align:center}
-        .mini-num{font-family:var(--font-mono);font-size:18px;font-weight:700}
-        .mini-lbl{font-size:9px;color:var(--text2);text-transform:uppercase;letter-spacing:.07em;margin-top:2px}
-        .zone-list{padding:0 16px}
-        .zone-row{
-          display:flex;align-items:center;gap:10px;
-          background:var(--card);border:1px solid var(--border);
-          border-radius:var(--r-md);padding:13px;margin-bottom:7px;
-          cursor:pointer;transition:border-color .2s;
+        .field-label {
+          font-family: var(--font-display);
+          font-size: 10px;
+          letter-spacing: 0.2em;
+          fill: var(--accent);
+          opacity: 0.6;
         }
-        .zone-row:hover{border-color:var(--accent)}
-        .zone-row.sel{border-color:var(--accent);background:rgba(0,212,255,.04)}
-        .z-bar{flex:1;height:4px;background:var(--bg3);border-radius:2px}
-        .z-bar-fill{height:100%;border-radius:2px;transition:width 1s}
-        .rec-badge{
-          background:rgba(0,230,118,.15);border:1px solid rgba(0,230,118,.35);
-          border-radius:100px;padding:2px 9px;font-size:9px;color:var(--green);font-weight:700;
+        .legend-premium {
+          display: flex;
+          justify-content: center;
+          gap: 16px;
+          margin-top: 16px;
         }
+        .leg-item-glass {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          font-size: 10px;
+          font-weight: 700;
+          color: var(--text-muted);
+          text-transform: uppercase;
+        }
+        .leg-indicator {
+          width: 8px;
+          height: 8px;
+          border-radius: 2px;
+          box-shadow: 0 0 10px currentColor;
+        }
+        .zone-detail-glass {
+          margin: 0 20px 24px;
+          background: var(--glass);
+          border: 1px solid var(--glass-border);
+          border-radius: var(--r-lg);
+          padding: 20px;
+          animation: slideUp 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+        .zone-stat-row {
+          display: grid;
+          grid-template-columns: repeat(3, 1fr);
+          gap: 12px;
+          margin-top: 20px;
+        }
+        .zone-stat-box {
+          background: rgba(255,255,255,0.03);
+          border-radius: 12px;
+          padding: 12px;
+          text-align: center;
+          border: 1px solid var(--glass-border);
+        }
+        .zone-stat-val {
+          font-family: var(--font-mono);
+          font-size: 20px;
+          font-weight: 800;
+          display: block;
+        }
+        .zone-stat-lbl {
+          font-size: 9px;
+          color: var(--text-dim);
+          text-transform: uppercase;
+          margin-top: 4px;
+        }
+        .zone-card-premium {
+          background: var(--glass);
+          border: 1px solid var(--glass-border);
+          border-radius: var(--r-md);
+          padding: 16px;
+          margin: 0 20px 10px;
+          display: flex;
+          align-items: center;
+          gap: 16px;
+          transition: 0.3s;
+        }
+        .zone-card-premium.active {
+          border-color: var(--accent);
+          background: rgba(34, 211, 238, 0.15);
+          box-shadow: 0 0 20px var(--accent-glow);
+        }
+        .p-bar-track {
+          flex: 1;
+          height: 6px;
+          background: rgba(255,255,255,0.05);
+          border-radius: 100px;
+          overflow: hidden;
+          margin-top: 8px;
+        }
+        .p-bar-fill {
+          height: 100%;
+          border-radius: 100px;
+          transition: width 1.5s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+        @keyframes slideUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
       `}</style>
 
-      {/* Header */}
-      <div className="map-hdr">
-        <div style={{fontFamily:'var(--font-display)',fontSize:26,letterSpacing:'.05em'}}>CROWD MAP</div>
-        <div style={{display:'flex',alignItems:'center',gap:10,marginTop:4}}>
-          <div style={{fontSize:11,color:'var(--text2)',fontFamily:'var(--font-mono)'}}>Live · updates every 3.5s</div>
-          <div style={{marginLeft:'auto',fontFamily:'var(--font-mono)',fontSize:13,color:overallPct>80?'var(--red)':overallPct>60?'var(--yellow)':'var(--green)'}}>
             Avg {overallPct}%
           </div>
         </div>
