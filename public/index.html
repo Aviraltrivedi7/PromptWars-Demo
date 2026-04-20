@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"/>
+  <meta name="theme-color" content="#080c14"/>
+  <title>StadiumSense — AI Smart Venue</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{
+      --bg:#060a12;--bg2:#0b1320;--bg3:#101b2e;--card:#121c2e;
+      --border:#1a2840;--border2:#243652;
+      --accent:#00d4ff;--accent2:#ff6b35;--accent3:#a259ff;
+      --green:#00e676;--red:#ff3d57;--yellow:#ffd600;--orange:#ff9500;
+      --text:#ddeeff;--text2:#6a8aad;--text3:#3d5a7a;
+      --font-display:'Bebas Neue',sans-serif;
+      --font-body:'DM Sans',sans-serif;
+      --font-mono:'JetBrains Mono',monospace;
+      --r-sm:8px;--r-md:14px;--r-lg:20px;--r-xl:28px;
+      --shadow:0 4px 24px rgba(0,0,0,0.4);
+    }
+    html{scroll-behavior:smooth}
+    body{
+      background:var(--bg);color:var(--text);
+      font-family:var(--font-body);
+      -webkit-font-smoothing:antialiased;
+      overflow-x:hidden;
+    }
+    #root{min-height:100vh;display:flex;flex-direction:column}
+    ::-webkit-scrollbar{width:3px}
+    ::-webkit-scrollbar-track{background:var(--bg2)}
+    ::-webkit-scrollbar-thumb{background:var(--accent);border-radius:2px}
+    ::selection{background:rgba(0,212,255,0.2)}
+    button{font-family:var(--font-body)}
+    input,textarea{font-family:var(--font-body)}
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+</body>
+</html>
